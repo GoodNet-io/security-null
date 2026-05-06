@@ -7,7 +7,7 @@
   description = "GoodNet security plugin: null — standalone plugin flake.";
 
   inputs = {
-    goodnet.url     = "git+file:../../GoodNet?dir=nix/kernel-only";
+    goodnet.url     = "git+file:../../..?dir=nix/kernel-only";
     nixpkgs.follows = "goodnet/nixpkgs";
   };
 
