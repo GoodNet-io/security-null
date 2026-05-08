@@ -30,10 +30,10 @@ cmake --build build
 
 Manifest entry pins the SHA-256 digest; `gn_plugin_init` registers
 the `null` provider. See `docs/install.md` and
-`docs/contracts/plugin-manifest.md` in the kernel tree.
+`docs/contracts/plugin-manifest.en.md` in the kernel tree.
 
 ## Contract
 
-- Kernel-side trust-class policy: `docs/contracts/security-trust.md`
+- Kernel-side trust-class policy: `docs/contracts/security-trust.en.md`
 - `null_allowed_trust_mask = Loopback | IntraNode`; the protocol layer
   rejects any other trust class on connect.
