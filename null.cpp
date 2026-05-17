@@ -2,7 +2,7 @@
 /// @brief  Null security provider — pass-through encrypt / decrypt.
 ///
 /// For loopback, IPC, intra-node, and the "I trust this link"
-/// paths permitted by `security-trust.md` §4 with explicit opt-in.
+/// paths permitted by `security-trust.en.md` §4 with explicit opt-in.
 /// Handshake is a single no-op step that returns "complete" right
 /// away; encrypt / decrypt copy the input buffer to a fresh
 /// allocation so the kernel's contract on plugin-allocated output
@@ -133,7 +133,7 @@ void null_destroy(void* self) {
 
 /// Null provider is a passthrough — no encryption, no authentication.
 /// Permitted only on inherently trusted classes per
-/// `security-trust.md` §4: AF_UNIX-style loopback and intra-process
+/// `security-trust.en.md` §4: AF_UNIX-style loopback and intra-process
 /// pipes. Public-network connections must not reach this provider.
 std::uint32_t null_allowed_trust_mask(void* /*self*/) {
     return (1u << GN_TRUST_LOOPBACK) | (1u << GN_TRUST_INTRA_NODE);

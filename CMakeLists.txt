@@ -15,7 +15,7 @@ if(NOT TARGET GoodNet::sdk)
 endif()
 
 # Null security provider — loopback / debug pass-through. Per
-# `security-trust.md` §4-§5 only permitted on Loopback / IntraNode
+# `security-trust.en.md` §4-§5 only permitted on Loopback / IntraNode
 # trust classes by default; production deployments do not load this
 # plugin.
 

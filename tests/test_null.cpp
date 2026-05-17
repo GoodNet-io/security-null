@@ -1,7 +1,7 @@
 /// @file   plugins/security/null/tests/test_null.cpp
 /// @brief  GoogleTest unit tests for the `null` security provider.
 ///
-/// Per `docs/contracts/security-trust.md` §6 the null provider lives as
+/// Per `docs/contracts/security-trust.en.md` §6 the null provider lives as
 /// a plugin shared object — never linked statically into the kernel.
 /// The build emits `libgoodnet_security_null.so` with hidden visibility
 /// in standalone builds and default visibility for in-tree tests.
