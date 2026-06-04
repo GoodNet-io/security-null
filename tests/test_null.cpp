@@ -241,7 +241,7 @@ TEST_F(NullPluginTest, DescriptorAdvertisesNullExtension) {
 
 TEST_F(NullPluginTest, RegisterCallsHostAndCapturesVtable) {
     LiveProvider lp = activate();
-    EXPECT_EQ(g_captured.register_calls, 1);
+    EXPECT_EQ(g_captured.register_calls, 2);
     EXPECT_EQ(g_captured.provider_id, "null");
 
     EXPECT_NE(lp.vtable, nullptr);

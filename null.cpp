@@ -153,13 +153,37 @@ gn_security_provider_vtable_t make_null_vtable() {
     v.handshake_close       = &null_handshake_close;
     v.destroy               = &null_destroy;
     v.allowed_trust_mask    = &null_allowed_trust_mask;
+    v.provides_flags        = [](void*) noexcept -> std::uint32_t { return 0; };
     return v;
 }
 
 const gn_security_provider_vtable_t kVtable = make_null_vtable();
 
+/// link-only provider — same pass-through crypto as null, but permitted
+/// on `GN_TRUST_LINK_ENCRYPTED` connections (link-layer TLS + operator
+/// opt-in via `security.allow_link_only: true`).
+constexpr const char* kLinkOnlyProviderId = "link-only";
+
+const char* link_only_provider_id(void* /*self*/) {
+    return kLinkOnlyProviderId;
+}
+
+std::uint32_t link_only_allowed_trust_mask(void* /*self*/) {
+    return 1u << GN_TRUST_LINK_ENCRYPTED;
+}
+
+gn_security_provider_vtable_t make_link_only_vtable() {
+    gn_security_provider_vtable_t v = make_null_vtable();
+    v.provider_id        = &link_only_provider_id;
+    v.allowed_trust_mask = &link_only_allowed_trust_mask;
+    return v;
+}
+
+const gn_security_provider_vtable_t kLinkOnlyVtable = make_link_only_vtable();
+
 const char* const kProvidesList[] = {
     "gn.security.null",
+    "gn.security.link-only",
     nullptr,
 };
 
@@ -200,6 +224,10 @@ GN_PLUGIN_EXPORT gn_result_t GN_PLUGIN_REGISTER_NAME(void* self) {
     if (!self) return GN_ERR_NULL_ARG;
     auto* p = static_cast<NullPlugin*>(self);
     if (!p->api || !p->api->register_security) return GN_ERR_NOT_IMPLEMENTED;
+    // link-only is opportunistic: hosts with single-slot security registries
+    // keep null (registered last); multi-slot hosts get both.
+    (void)p->api->register_security(
+        p->host_ctx, kLinkOnlyProviderId, &kLinkOnlyVtable, p);
     return p->api->register_security(p->host_ctx, kProviderId, &kVtable, p);
 }
 
@@ -207,7 +235,9 @@ GN_PLUGIN_EXPORT gn_result_t GN_PLUGIN_UNREGISTER_NAME(void* self) {
     if (!self) return GN_ERR_NULL_ARG;
     auto* p = static_cast<NullPlugin*>(self);
     if (!p->api || !p->api->unregister_security) return GN_OK;
-    return p->api->unregister_security(p->host_ctx, kProviderId);
+    (void)p->api->unregister_security(p->host_ctx, kLinkOnlyProviderId);
+    (void)p->api->unregister_security(p->host_ctx, kProviderId);
+    return GN_OK;
 }
 
 GN_PLUGIN_EXPORT void GN_PLUGIN_SHUTDOWN_NAME(void* self) {
