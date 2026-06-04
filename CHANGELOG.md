@@ -6,9 +6,16 @@ versions track the kernel ABI through `gn_security_vtable_t`.
 
 ## [Unreleased]
 
-No functional changes since `v1.0.0-rc1`. Post-tag activity is
-limited to documentation refs (`.md` → `.en.md` sweep across
-plugin-side docs).
+### `provides_flags` vtable slot + `link-only` provider
+
+Added `provides_flags` lambda to the null vtable (returns `0` —
+no cryptographic properties). Added a second full provider,
+`link-only` (`kLinkOnlyProviderId = "link-only"`), whose
+`allowed_trust_mask` is `1u << GN_TRUST_LINK_ENCRYPTED`;
+registered as `"gn.security.link-only"` in `kProvidesList`. The
+link-only provider covers transports that deliver link-layer
+confidentiality (e.g. DTLS-offload) where upper-layer encryption
+would be redundant but the trust class must still be constrained.
 
 ## [1.0.0-rc1] — 2026-05-08
 
